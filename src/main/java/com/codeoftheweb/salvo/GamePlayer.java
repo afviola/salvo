@@ -7,54 +7,23 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import java.util.Date;
+
 @Entity
-public class Player {
+public class GamePlayer {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
     private long id;
-    private String userName;
+    private Player player;
+    private Game game;
+    private Date creationDate;
 
-    public Player() {}
+    public GamePlayer() {}
 
-    public Player(String userName) {
-        this.userName = userName;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public String getUserName() {
-        return this.userName;
+    public GamePlayer(Player player, Game game, Date creationDate) {
+        this.player = player;
+        this.game = game;
+        this.creationDate = creationDate;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
