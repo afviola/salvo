@@ -2,11 +2,10 @@ package com.codeoftheweb.salvo;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Game {
@@ -16,7 +15,12 @@ public class Game {
     private int id;
     private Date creationDate;
 
-    public Game() {}
+    @OneToMany(mappedBy = "game", fetch = FetchType.EAGER)
+    private Set<GamePlayer> gamePlayers = new HashSet<>();
+
+    public Game() {
+
+    }
 
     public Game(Date creationDate) {
         this.creationDate = creationDate;

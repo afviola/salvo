@@ -2,10 +2,7 @@ package com.codeoftheweb.salvo;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 import java.util.Date;
 
@@ -15,8 +12,15 @@ public class GamePlayer {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
     private long id;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "player_id")
     private Player player;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "game_id")
     private Game game;
+
     private Date creationDate;
 
     public GamePlayer() {}
@@ -25,5 +29,21 @@ public class GamePlayer {
         this.player = player;
         this.game = game;
         this.creationDate = creationDate;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
     }
 }
