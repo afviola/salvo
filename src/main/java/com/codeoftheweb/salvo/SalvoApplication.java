@@ -6,9 +6,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import java.time.Instant;
-import java.util.Date;
-
 @SpringBootApplication
 public class SalvoApplication {
 
@@ -17,19 +14,34 @@ public class SalvoApplication {
 	}
 
 	@Bean
-	public CommandLineRunner initData(PlayerRepository playerRepository, GameRepository gameRepository) {
+	public CommandLineRunner initData(
+			PlayerRepository playerRepository,
+			GameRepository gameRepository,
+			GamePlayerRepository gamePlayerRepository) {
 		return (args) -> {
-			playerRepository.save(new Player("player1@ex.com"));
-			playerRepository.save(new Player("player2@ex.com"));
-			playerRepository.save(new Player("player3@ex.com"));
+			Player player1 = new Player("player1@ex.com");
+			Player player2 = new Player("player2@ex.com");
+			Player player3 = new Player("player3@ex.com");
 
-			Instant currentDate = Instant.now();
+			playerRepository.save(player1);
+			playerRepository.save(player2);
+			playerRepository.save(player3);
 
-			gameRepository.save(new Game(Date.from(currentDate)));
-			gameRepository.save(new Game(Date.from(currentDate.plusSeconds(3600))));
-			gameRepository.save(new Game(Date.from(currentDate.plusSeconds(3600 * 2))));
-			gameRepository.save(new Game(Date.from(currentDate.plusSeconds(3600 * 3))));
-			gameRepository.save(new Game(Date.from(currentDate.plusSeconds(3600 * 4))));
+			Game game1 = new Game();
+			Game game2 = new Game();
+
+			gameRepository.save(game1);
+			gameRepository.save(game2);
+
+			GamePlayer gp1 = new GamePlayer(player1, game1);
+			GamePlayer gp2 = new GamePlayer(player2, game1);
+			GamePlayer gp3 = new GamePlayer(player2, game2);
+			GamePlayer gp4 = new GamePlayer(player3, game2);
+
+			gamePlayerRepository.save(gp1);
+			gamePlayerRepository.save(gp2);
+			gamePlayerRepository.save(gp3);
+			gamePlayerRepository.save(gp4);
 		};
 	}
 }

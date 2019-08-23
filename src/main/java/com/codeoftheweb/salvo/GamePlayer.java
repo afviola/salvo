@@ -20,30 +20,29 @@ public class GamePlayer {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "game_id")
     private Game game;
-
     private Date creationDate;
 
     public GamePlayer() {}
 
-    public GamePlayer(Player player, Game game, Date creationDate) {
+    public GamePlayer(Player player, Game game) {
         this.player = player;
         this.game = game;
-        this.creationDate = creationDate;
+        this.creationDate = new Date();
     }
 
     public long getId() {
-        return id;
+        return this.id;
     }
 
     public Player getPlayer() {
-        return player;
+        return this.player;
     }
 
     public Game getGame() {
-        return game;
+        return this.game;
     }
 
     public Date getCreationDate() {
-        return creationDate;
+        return this.creationDate;
     }
 }
