@@ -12,10 +12,12 @@ public class Player {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
     private long id;
-    private String userName;
 
     @OneToMany(mappedBy = "player", fetch = FetchType.EAGER)
     private Set<GamePlayer> gamePlayers;
+
+    private String userName;
+
     public Player() {}
 
     public Player(String userName) {
@@ -24,11 +26,15 @@ public class Player {
     }
 
     public long getId() {
-        return this.id;
+        return id;
     }
 
     public String getUserName() {
-        return this.userName;
+        return userName;
+    }
+
+    public Set<GamePlayer> getGamePlayers() {
+        return gamePlayers;
     }
 }
 

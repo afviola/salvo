@@ -12,23 +12,28 @@ public class Game {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
-    private int id;
-    private Date creationDate;
+    private long id;
 
     @OneToMany(mappedBy = "game", fetch = FetchType.EAGER)
     private Set<GamePlayer> gamePlayers;
+
+    private Date creationDate;
 
     public Game() {
         this.creationDate = new Date();
         this.gamePlayers = new HashSet<>();
     }
 
-    public int getId() {
-        return this.id;
+    public long getId() {
+        return id;
     }
 
     public Date getCreationDate() {
-        return this.creationDate;
+        return creationDate;
+    }
+
+    public Set<GamePlayer> getGamePlayers() {
+        return gamePlayers;
     }
 }
 

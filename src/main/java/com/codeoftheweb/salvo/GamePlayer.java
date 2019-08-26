@@ -14,12 +14,13 @@ public class GamePlayer {
     private long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "player_id")
+    @JoinColumn(name = "fk_player")
     private Player player;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "game_id")
+    @JoinColumn(name = "fk_game")
     private Game game;
+
     private Date creationDate;
 
     public GamePlayer() {}
@@ -31,18 +32,18 @@ public class GamePlayer {
     }
 
     public long getId() {
-        return this.id;
+        return id;
     }
 
     public Player getPlayer() {
-        return this.player;
+        return player;
     }
 
     public Game getGame() {
-        return this.game;
+        return game;
     }
 
     public Date getCreationDate() {
-        return this.creationDate;
+        return creationDate;
     }
 }
