@@ -18,7 +18,9 @@ public class Player {
 
     private String userName;
 
-    public Player() {}
+    public Player() {
+
+    }
 
     public Player(String userName) {
         this.userName = userName;
