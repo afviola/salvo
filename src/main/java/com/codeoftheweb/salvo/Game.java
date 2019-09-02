@@ -10,7 +10,8 @@ import java.util.Set;
 @Entity
 public class Game {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GenericGenerator(name = "native", strategy = "native")
     private long id;
 
     @OneToMany(mappedBy = "game", fetch = FetchType.EAGER)

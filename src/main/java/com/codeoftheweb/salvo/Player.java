@@ -1,5 +1,7 @@
 package com.codeoftheweb.salvo;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.util.Set;
 import java.util.HashSet;
@@ -7,7 +9,8 @@ import java.util.HashSet;
 @Entity
 public class Player {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GenericGenerator(name = "native", strategy = "native")
     private long id;
 
     @OneToMany(mappedBy = "player", fetch = FetchType.EAGER)
