@@ -1,7 +1,5 @@
 package com.codeoftheweb.salvo;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 
 import java.util.Date;
@@ -10,8 +8,7 @@ import java.util.Set;
 @Entity
 public class GamePlayer {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-    @GenericGenerator(name = "native", strategy = "native")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -22,7 +19,7 @@ public class GamePlayer {
     @JoinColumn(name = "fk_game")
     private Game game;
 
-    @OneToMany(mappedBy = "gameplayer", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "gamePlayer", fetch = FetchType.EAGER)
     private Set<Ship> ships;
 
     private Date creationDate;
@@ -35,16 +32,6 @@ public class GamePlayer {
         this.player = player;
         this.game = game;
         this.creationDate = new Date();
-    }
-
-    public GamePlayer(Player player, Game game, Set<Ship> ships) {
-        this(player, game);
-        this.ships = ships;
-    }
-
-    public void addShip(Ship ship) {
-        ships.add(ship);
-        ship.setGamePlayer(this);
     }
 
     public long getId() {

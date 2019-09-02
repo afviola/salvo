@@ -1,15 +1,12 @@
 package com.codeoftheweb.salvo;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 public class Ship {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-    @GenericGenerator(strategy = "native", name="native")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -26,10 +23,10 @@ public class Ship {
 
     }
 
-    public Ship(GamePlayer gamePlayer, String type, List<String> locations) {
+    public Ship(String type ,GamePlayer gamePlayer, List<String> locations) {
         this.type = type;
-        this.locations = locations;
         this.gamePlayer = gamePlayer;
+        this.locations = locations;
     }
 
     public long getId() {
@@ -44,7 +41,7 @@ public class Ship {
         return locations;
     }
 
-    public void setGamePlayer(GamePlayer gamePlayer) {
-        this.gamePlayer = gamePlayer;
+    public String getType() {
+        return type;
     }
 }
