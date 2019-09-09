@@ -63,5 +63,7 @@ public class GamePlayer {
         return ships;
     }
 
-    public Set<Salvo> getSalvoes() { return salvoes; }
+    public Set<Salvo> getSalvoes() {
+        return salvoes;
+    }
 }

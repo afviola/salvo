@@ -3,6 +3,7 @@ package com.codeoftheweb.salvo;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Salvo {
@@ -15,11 +16,20 @@ public class Salvo {
     @JoinColumn(name = "fk_gameplayer")
     private GamePlayer gamePlayer;
 
+    @ElementCollection
+    @Column(name = "location")
+    private List<String> locations;
+
     private int turn;
 
-    public Salvo(GamePlayer gamePlayer, int turn) {
+    public Salvo() {
+
+    }
+
+    public Salvo(GamePlayer gamePlayer, int turn, List<String> locations) {
         this.gamePlayer = gamePlayer;
         this.turn = turn;
+        this.locations = locations;
     }
 
     public long getId() {
@@ -32,5 +42,9 @@ public class Salvo {
 
     public int getTurn() {
         return turn;
+    }
+
+    public List<String> getLocations() {
+        return locations;
     }
 }
