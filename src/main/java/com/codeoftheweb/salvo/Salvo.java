@@ -3,7 +3,9 @@ package com.codeoftheweb.salvo;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 public class Salvo {
@@ -30,6 +32,15 @@ public class Salvo {
         this.gamePlayer = gamePlayer;
         this.turn = turn;
         this.locations = locations;
+    }
+
+    public Map<String, Object> toDto() {
+        Map<String, Object> salvoDto = new LinkedHashMap<>();
+        salvoDto.put("turn", turn);
+        salvoDto.put("player", gamePlayer.getPlayer().getId());
+        salvoDto.put("locations", locations);
+
+        return salvoDto;
     }
 
     public long getId() {

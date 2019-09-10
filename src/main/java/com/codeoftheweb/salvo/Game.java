@@ -3,9 +3,8 @@ package com.codeoftheweb.salvo;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 public class Game {
@@ -22,6 +21,18 @@ public class Game {
     public Game() {
         this.creationDate = new Date();
         this.gamePlayers = new HashSet<>();
+    }
+
+    public Map<String, Object> toDto() {
+        Map<String, Object> dto = new LinkedHashMap<>();
+        dto.put("id", id);
+        dto.put("created", creationDate.toLocaleString());
+        dto.put("gamePlayers", gamePlayers
+                .stream()
+                .map(gamePlayer -> gamePlayer.toDto())
+                .collect(Collectors.toList()));
+
+        return dto;
     }
 
     public long getId() {

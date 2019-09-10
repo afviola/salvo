@@ -3,6 +3,8 @@ package com.codeoftheweb.salvo;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -25,6 +27,14 @@ public class Player {
     public Player(String userName) {
         this.userName = userName;
         this.gamePlayers = new HashSet<>();
+    }
+
+    public Map<String, Object> toDto() {
+        Map<String, Object> dto = new LinkedHashMap<>();
+        dto.put("id", id);
+        dto.put("email", userName);
+
+        return dto;
     }
 
     public long getId() {
