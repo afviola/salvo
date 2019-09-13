@@ -21,9 +21,9 @@ function loadData() {
       $('#playerInfo').text(playerInfo[0].email + '(you) vs ' + playerInfo[1].email);
 
       data.ships.forEach(function (shipPiece) {
-        shipPiece.shipLocations.forEach(function (shipLocation) {
+        shipPiece.locations.forEach(function (shipLocation) {
           let turnHitted = isHit(shipLocation,data.salvoes,playerInfo[0].id)
-          if(turnHitted >0){
+          if(turnHitted > 0){
             $('#B_' + shipLocation).addClass('ship-piece-hited');
             $('#B_' + shipLocation).text(turnHitted);
           }
@@ -34,11 +34,11 @@ function loadData() {
       data.salvoes.forEach(function (salvo) {
         console.log(salvo);
         if (playerInfo[0].id === salvo.player) {
-          salvo.salvoLocations.forEach(function (location) {
+          salvo.locations.forEach(function (location) {
             $('#S_' + location).addClass('salvo');
           });
         } else {
-          salvo.salvoLocations.forEach(function (location) {
+          salvo.locations.forEach(function (location) {
             $('#_' + location).addClass('salvo');
           });
         }
@@ -53,7 +53,7 @@ function isHit(shipLocation,salvoes,playerId) {
   var hit = 0;
   salvoes.forEach(function (salvo) {
     if(salvo.player != playerId)
-      salvo.salvoLocations.forEach(function (location) {
+      salvo.locations.forEach(function (location) {
         if(shipLocation === location)
           hit = salvo.turn;
       });
