@@ -33,6 +33,33 @@ public class Player {
         this.scores = new HashSet<>();
     }
 
+    public float getWins() {
+        return scores.stream().filter(score -> score.getScore() == 1).count();
+    }
+
+    public float getLoses() {
+        return scores.stream().filter(score -> score.getScore() == 0.5).count();
+    }
+
+    public float getDraws() {
+        return scores.stream().filter(score -> score.getScore() == 0).count();
+    }
+
+    public float getTotalScore() {
+        return 1f * getWins() + 0.5f * getDraws() + 0 * getLoses();
+    }
+
+    public Map<String, Object> toGameHistory() {
+        Map<String, Object> history = new LinkedHashMap<>();
+        history.put("name", userName);
+        history.put("total", getTotalScore());
+        history.put("won", getWins());
+        history.put("lost", getLoses());
+        history.put("tied", getDraws());
+
+        return history;
+    }
+
     public Map<String, Object> toDto() {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", id);
