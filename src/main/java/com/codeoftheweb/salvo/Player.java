@@ -22,15 +22,17 @@ public class Player {
     private Set<Score> scores;
 
     private String userName;
+    private String password;
 
     public Player() {
 
     }
 
-    public Player(String userName) {
+    public Player(String userName, String password) {
         this.userName = userName;
         this.gamePlayers = new HashSet<>();
         this.scores = new HashSet<>();
+        this.password = password;
     }
 
     public float getWins() {
@@ -66,6 +68,10 @@ public class Player {
         dto.put("email", userName);
 
         return dto;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public long getId() {

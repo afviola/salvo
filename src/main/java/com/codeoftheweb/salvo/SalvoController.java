@@ -1,6 +1,7 @@
 package com.codeoftheweb.salvo;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +22,9 @@ public class SalvoController {
 
     @Autowired
     private PlayerRepository playerRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @RequestMapping("/leaderboard")
     public List<Object> getLeaderboard() {
