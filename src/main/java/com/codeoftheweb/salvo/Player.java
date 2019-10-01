@@ -40,11 +40,11 @@ public class Player {
     }
 
     public float getLoses() {
-        return scores.stream().filter(score -> score.getScore() == 0.5).count();
+        return scores.stream().filter(score -> score.getScore() == 0).count();
     }
 
     public float getDraws() {
-        return scores.stream().filter(score -> score.getScore() == 0).count();
+        return scores.stream().filter(score -> score.getScore() == 0.5).count();
     }
 
     public float getTotalScore() {

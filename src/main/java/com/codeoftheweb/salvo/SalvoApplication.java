@@ -9,6 +9,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.GlobalAuthenticationConfigurerAdapter;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -76,17 +79,34 @@ class WebSecurityApplication extends GlobalAuthenticationConfigurerAdapter {
 
 	@Override
 	public void init(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(inputName -> {
-			Player player = playerRepository.findByUserName(inputName);
+		auth.userDetailsService(input -> {
+			Player player = playerRepository.findByUserName(input);
 			if(player != null) {
 				return new User(
 						player.getUserName(),
 						player.getPassword(),
 						AuthorityUtils.createAuthorityList("USER"));
 			} else {
-				throw new UsernameNotFoundException("Unknown user: " + inputName);
+				throw new UsernameNotFoundException("Unknown user: " + input);
 			}
 		});
+	}
+}
+
+@EnableWebSecurity
+@Configuration
+class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		/*
+		http.authorizeRequests()
+				.antMatchers()
+				.antMatchers()
+				.and()
+				.formLogin();
+
+		 */
 	}
 }
 
