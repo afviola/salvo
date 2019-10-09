@@ -47,8 +47,8 @@ public class SalvoApplication {
 			ScoreRepository scoreRepository) {
 
 		return (args) -> {
-			Player player1 = new Player("j.bauer@ctu.gov", "123");
-			Player player2 = new Player("c.obrian@ctu.gov", "456");
+			Player player1 = new Player("j.bauer@ctu.gov", passwordEncoder().encode("123"));
+			Player player2 = new Player("c.obrian@ctu.gov", passwordEncoder().encode("456"));
 
 			playerRepository.save(player1);
 			playerRepository.save(player2);
@@ -103,17 +103,16 @@ class WebSecurityApplication extends GlobalAuthenticationConfigurerAdapter {
 class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests()
-				.antMatchers(
-						"/web/**",
-						"/api/logout",
-						"/api/leaderboard",
-						"/api/game_view/*",
-						"/api/games").permitAll()
-				.anyRequest().authenticated()
-				.and()
-				.formLogin()
-				.usernameParameter("username")
+        http.authorizeRequests()
+                .antMatchers(
+                        "/web/**",
+                        "/api/**",
+                        "/rest/**"
+                        ).permitAll()
+                .anyRequest().permitAll();
+
+        http.formLogin()
+                .usernameParameter("username")
 				.passwordParameter("password")
 				.loginPage("/api/login");
 
@@ -143,17 +142,5 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 

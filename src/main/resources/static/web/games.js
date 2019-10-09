@@ -12,7 +12,7 @@ $('document').ready(function() {
 function createGameList(games) {
     let gameList = $('#game-list');
 
-    games.forEach(game =>  {
+    games.forEach(game => {
         gameList.append(
             `<li>
                 ${game.created} ;
@@ -39,18 +39,3 @@ function createLeaderboard(players) {
         );
     });
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
