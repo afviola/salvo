@@ -107,6 +107,7 @@ public class SalvoController {
 
         Player newPlayer = playerRepository.save(new Player(username, passwordEncoder.encode(password)));
         response.put("id", newPlayer.getId());
+        response.put("username", newPlayer.getUserName());
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
