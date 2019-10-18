@@ -56,18 +56,9 @@ public class SalvoController {
     }
 
     @RequestMapping("/game_view/{gamePlayerId}")
-    public Map<String, Object> getGamePlayerViewById(@PathVariable long gamePlayerId) {
-        Map<String, Object> gameView = new LinkedHashMap<>();
+    public Map<String, Object> getGamePlayerViewById(@PathVariable Long gamePlayerId) {
         GamePlayer currentGamePlayer = gamePlayerRepository.getOne(gamePlayerId);
-
-        gameView.put("id", currentGamePlayer.getGame().getId());
-        gameView.put("creationDate", currentGamePlayer.getCreationDate());
-        gameView.put("gamePlayers", currentGamePlayer
-                .getGame()
-                .getGamePlayers()
-                .stream()
-                .map(gamePlayer -> gamePlayer.toDto())
-                .collect(Collectors.toList()));
+        Map<String, Object> gameView = currentGamePlayer.getGame().toDto();
 
         gameView.put("ships", currentGamePlayer
                 .getShips()

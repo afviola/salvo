@@ -1,64 +1,12 @@
-
-Vue.component('navbar', {
-    data: function() {
-        return {
-            username: '',
-            password: '',
-            guest: true,
-        }
-    },
-
-    methods: {
-        login: function() {
-            $.post("/api/login", { username: this.username, password: this.password })
-                .done(() => {
-                    this.cleanInputs();
-                    this.guest = false;
-                    console.log("logged in");
-                })
-                .fail(() => console.log('ups! login failed'));
-        },
-
-        logout: function() {
-            $.post("/api/logout")
-                .done(() => {
-                    this.guest = true;
-                    console.log("logged out");
-                });
-        },
-
-        signIn: function() {
-            $.post("/api/players", { username: this.username, password: this.password })
-                .done(response => {
-                    this.cleanInputs();
-                    console.log(`new user created: ${response.username}`);
-                });
-        },
-
-        cleanInputs: function() {
-            this.username = '';
-            this.password = '';
-        }
-    },
-
-    template: `
-        <div>
-            <span v-if="guest">
-                <input type="text" placeholder="username" v-model="username">
-                <input type="password" placeholder="password" v-model="password">
-                <button @click="login">login</button>
-                <button @click="signIn">sign in</button>
-            </span>
-            <button v-else @click="logout">logout</button>
-        </div>
-    `
-});
-
 Vue.component('leaderboard', {
     data: function() {
         return {
             players: []
         }
+    },
+
+    created() {
+        $.get('/api/leaderboard').done(players => players.forEach(player => this.players.push(player)));
     },
 
     template: `
@@ -80,23 +28,74 @@ Vue.component('leaderboard', {
                 </tr>
             </table>
         </div>
-    `,
-
-    created() {
-        $.get('/api/leaderboard')
-            .done(players => players.forEach(player => this.players.push(player)));
-    }
+    `
 });
 
-Vue.component('game-list', {
+Vue.component('games', {
     data: function() {
         return {
+            username: '',
+            password: '',
+            player: null,
             games: []
+        }
+    },
+
+    created() {
+       this.fetchData();
+    },
+
+    methods: {
+        clearInputs() {
+            this.username = '';
+            this.password = '';
+        },
+
+        fetchData() {
+            $.get("/api/games").done(response => {
+                response.games.forEach(game => this.games.push(game));
+                this.player = response.player;
+            });
+        },
+
+        login() {
+            $.post("/api/login", { username: this.username, password: this.password })
+                .done(() => {
+                    this.fetchData();
+                    this.clearInputs();
+                })
+                .fail(() => console.log('ups! login failed'));
+        },
+
+        logout() {
+            $.post("/api/logout")
+                .done(() => {
+                    this.player = null
+                });
+        },
+
+        signIn() {
+            $.post("/api/players", { username: this.username, password: this.password })
+                .done(response => {
+                    this.clearInputs();
+                    alert(`new user created: ${response.username}`);
+            });
         }
     },
 
     template: `
         <div>
+            <span v-if="!player">
+                <input type="text" placeholder="username" v-model="username">
+                <input type="password" placeholder="password" v-model="password">
+                <button @click="login">login</button>
+                <button @click="signIn">sign in</button>
+            </span>
+            <span v-else>
+                <span>User: {{ player.email }}</span>
+                <button @click="logout">logout</button>
+            </span>
+
             <h3>Game List</h3>
             <table>
                 <thead>
@@ -111,12 +110,7 @@ Vue.component('game-list', {
                 </tr>
             </table>
         </div>
-    `,
-
-    created() {
-        $.get('/api/games')
-            .done(response => { response.games.forEach(game => this.games.push(game)) });
-    }
+    `
 });
 
 var app = new Vue({
