@@ -1,12 +1,22 @@
-function getParameterByName(name) {
-  var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
-  return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
-}
+Vue.component('casilla', {
+    props: [],
+    template: `
+        <div>
+
+        </div>
+    `
+});
 
 Vue.component('board', {
     template: `
         <div>
-            Soy un board
+            <table>
+                <tr v-for="fila in filas">
+                    <td v-for="columna in columnas">
+                        <casilla></casilla>
+                    </td>
+                </tr>
+            </table>
         </div>
     `
 });
@@ -14,12 +24,18 @@ Vue.component('board', {
 var app = new Vue({
     el: "#app",
     data: {
-        gp: null
+        gameView: null
     },
     created() {
+         $.get('/api/game_view/' + this.getParameterByName('gp'))
+            .done(gameView => {
 
+            })
     },
     methods: {
-
+        getParameterByName(name) {
+          var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+          return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+        }
     }
 });
