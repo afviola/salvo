@@ -6,12 +6,21 @@
   <title>Game</title>
   <link rel="stylesheet"
         href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="game.css">
 </head>
 
 <body>
   <div id="app">
-    <board></board>
-    <board></board>
+    <board :filas="filas"
+           :columnas="columnas"
+           :tablero="'1'"
+           :titulo="'Tablero1'">
+    </board>
+    <board :filas="filas"
+           :columnas="columnas"
+           :tablero="'2'"
+           :titulo="'Tablero2'">
+    </board>
   </div>
 
   <!-- jQuery library -->
