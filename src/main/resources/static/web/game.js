@@ -1,16 +1,32 @@
 
-// tipos de casilla: agua, salvo, barco averiado, barco destruido
 Vue.component('casilla', {
-    props: ['tipo'],
+    props: ['tipo', 'posicion'],
     template: `
-        <div>
-            {{ tipo }}
-        </div>
+        <div :class='tipo'>1</div>
     `
 });
 
 Vue.component('board', {
-    props: ['filas', 'columnas', 'tablero', 'titulo'],
+    props: ['filas', 'columnas', 'tablero', 'titulo', 'data'],
+    methods: {
+        getCellClass(pos) {
+            this.tablero == 1 ? this.boardType1Cell(pos) : this.boardType2Cell(pos);
+        },
+        createShips() {
+
+        },
+        createSalvoes() {
+
+        },
+
+        boardType1Cell(pos) {
+
+            return 'barco-averiado'
+        },
+        boardType2Cell(pos) {
+            return 'salvo'
+        }
+    },
     template: `
         <div>
             <h3>{{ titulo }}</h3>
@@ -19,27 +35,29 @@ Vue.component('board', {
                     <td v-for="columna in Number(columnas)">
                         <casilla
                             :id="tablero + '-' + fila + columna"
-                            :tipo="'agua'">
+                            :tipo="getCellClass(fila + columna)"
+                            :posicion="fila + columna">
                         </casilla>
                     </td>
                 </tr>
             </table>
         </div>
-    `
+    `,
 });
 
 var app = new Vue({
     el: "#app",
     data: {
         filas: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'],
-        columnas: 10
+        columnas: 10,
+        gameView: null
     },
     created() {
          $.get('/api/game_view/' + this.getParameterByName('gp'))
             .done(response => {
                 console.log(response);
-            })
-            .fail(() => { 'ups' });
+                this.gameView = response;
+            });
     },
     methods: {
         getParameterByName(name) {
