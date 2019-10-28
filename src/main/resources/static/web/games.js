@@ -80,6 +80,18 @@ Vue.component('games', {
                     this.clearInputs();
                     alert(`new user created: ${response.username}`);
             });
+        },
+
+        createGame() {
+            $.post("/api/games")
+                .done(response => {
+                    console.log(response);
+                    location.assign(`game.html?gp=${response.gpid}`);
+                });
+        },
+
+        joinGame() {
+            console.log('joinGame clicked');
         }
     },
 
@@ -97,6 +109,7 @@ Vue.component('games', {
             </span>
 
             <h3>Game List</h3>
+            <button v-show="player" @click="createGame">New Game</button>
             <table>
                 <thead>
                     <th>Created</th>
@@ -106,7 +119,13 @@ Vue.component('games', {
                 <tr v-for="game in games">
                     <td>{{ game.created }}</td>
                     <td>{{ game.gamePlayers[0].player.email }}</td>
-                    <td>{{ game.gamePlayers[1].player.email }}</td>
+                    <td v-show="game.gamePlayers[1]">{{ game.gamePlayers[1].player.email }}</td>
+                    <td v-show="!game.gamePlayers[1]">
+                        <button :id="game.gamePlayers[0].gpid"
+                                @click="joinGame">
+                                Join Game
+                        </button>
+                    </td>
                 </tr>
             </table>
         </div>

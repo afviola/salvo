@@ -11,16 +11,21 @@
 
 <body>
   <div id="app" class="container">
-    <board :filas="filas"
-           :columnas="columnas"
-           :tablero="'1'"
-           :titulo="'Tablero1'">
-    </board>
-    <board :filas="filas"
-           :columnas="columnas"
-           :tablero="'2'"
-           :titulo="'Tablero2'">
-    </board>
+    <span v-show="boardDataReady">
+      <div>
+        <span>{{ gameTitle }}</span>
+      </div>
+
+      <board :filas="filas"
+             :columnas="columnas"
+             :tablero="'B'">
+      </board>
+
+      <board :filas="filas"
+             :columnas="columnas"
+             :tablero="'S'">
+      </board>
+    </span>
   </div>
 
   <!-- jQuery library -->

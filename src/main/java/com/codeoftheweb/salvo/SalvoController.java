@@ -55,6 +55,23 @@ public class SalvoController {
         return dto;
     }
 
+    @RequestMapping(value = "/games", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> createNewGame(Authentication authentication) {
+        Map<String, Object> response = new LinkedHashMap<>();
+
+        if(isGuest(authentication)) {
+            response.put("error", "users must be logged in to create games");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+
+        GamePlayer newGamePlayer = gamePlayerRepository.save(
+                new GamePlayer(getCurrentUser(authentication), gameRepository.save(new Game())));
+
+        response.put("gpid", newGamePlayer.getId());
+
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
     @RequestMapping("/game_view/{gamePlayerId}")
     public Map<String, Object> getGamePlayerViewById(@PathVariable Long gamePlayerId) {
         GamePlayer currentGamePlayer = gamePlayerRepository.getOne(gamePlayerId);
@@ -93,8 +110,6 @@ public class SalvoController {
             response.put("error", "username already exists");
             return new ResponseEntity<>(response, HttpStatus.CONFLICT);
         }
-
-        // irian unas cuantas validaciones mas, si las pasa todas creo el user
 
         Player newPlayer = playerRepository.save(new Player(username, passwordEncoder.encode(password)));
         response.put("id", newPlayer.getId());

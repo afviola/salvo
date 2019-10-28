@@ -45,7 +45,7 @@ public class GamePlayer {
 
     public Map<String, Object> toDto() {
         Map<String, Object> dto = new LinkedHashMap<>();
-        dto.put("id", id);
+        dto.put("gpid", id);
         dto.put("player", player.toDto());
 
         return dto;
