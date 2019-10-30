@@ -126,10 +126,10 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 						"/web/game.html",
 						"/web/game.css",
 						"/web/game.js",
-						"/api/game/**", //test
+						"/api/game/*/players", //test
 						"/api/game_view/*",
 						"/api/logout").hasAuthority("USER")
-				.antMatchers("/rest/**").hasAuthority("ADMIN")
+				//.antMatchers("/rest/**").hasAuthority("ADMIN")
 				.anyRequest().denyAll();
 
         http.formLogin()

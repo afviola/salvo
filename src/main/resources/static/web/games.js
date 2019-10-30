@@ -101,8 +101,8 @@ Vue.component('games', {
             return game.gamePlayers[0].gpid;
         },
 
-        joinGame(event) {
-            $.post(`api/game/${event.target.attributes.gameid.value}/players`)
+        joinGame(gameId) {
+            $.post(`/api/game/${gameId}/players`)
                 .done(response => { console.log(response) })
                 .fail(response => { console.log(response) });
         },
@@ -144,7 +144,7 @@ Vue.component('games', {
                     <td v-else>
                         <button :id="getOwnerGamePlayerId(game)"
                                 :gameid="game.id"
-                                @click="joinGame">
+                                @click="joinGame(game.id)">
                                 Join Game
                         </button>
                     </td>
