@@ -25,8 +25,7 @@ var app = new Vue({
     data: {
         filas: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'],
         columnas: 10,
-        playerInfo: [],
-        gameTitle: '',
+        players: [],
         boardDataReady: false,
     },
 
@@ -34,8 +33,7 @@ var app = new Vue({
          $.get('/api/game_view/' + this.getParameterByName('gp'))
             .done(data => {
                 console.log(data);
-                this.setPlayerInfo(data);
-                this.setGameTitle();
+                this.setPlayersInfo(data);
 
                 this.printBoats(data.ships);
                 this.printLaunchedSalvoes(data.salvoes);
@@ -50,7 +48,7 @@ var app = new Vue({
 
     methods: {
         getParameterByName(name) {
-          let match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+          const match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
           return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
         },
 
@@ -63,11 +61,12 @@ var app = new Vue({
         },
 
         printLaunchedSalvoes(salvoes) {
+            console.log(salvoes);
             salvoes
-                .filter(salvo => salvo.player == this.playerInfo[0].id) // mis salvos
+                .filter(salvo => salvo.player == this.players[0].gpid) // mis salvos
                 .forEach(salvo => {
                     salvo.locations.forEach(location => {
-                        let salvoCell = document.getElementById(`S_${location}`);
+                        const salvoCell = document.getElementById(`S_${location}`);
                         salvoCell.classList.add('salvo');
                         salvoCell.innerHTML = salvo.turn;
                     });
@@ -75,14 +74,14 @@ var app = new Vue({
         },
 
         printOpponentHits(ships, salvoes) {
-            let myLocations = ships.flatMap(ship => ship.locations);
+            const myLocations = ships.flatMap(ship => ship.locations);
 
             salvoes
-                .filter(salvo => salvo.player != this.playerInfo[0].id) // los salvos enemigos
+                .filter(salvo => salvo.player != this.players[0].id) // los salvos enemigos
                 .forEach(salvo => {
                     salvo.locations.forEach(location => {
                         if (myLocations.includes(location)) {
-                            let boatCell = document.getElementById(`B_${location}`);
+                            const boatCell = document.getElementById(`B_${location}`);
                             boatCell.classList.add('ship-piece-hited');
                             boatCell.innerHTML = salvo.turn;
                         }
@@ -90,19 +89,23 @@ var app = new Vue({
                 });
         },
 
-        setPlayerInfo(data) {
-            if (data.gamePlayers[0].id == this.getParameterByName('gp'))
-                this.playerInfo = [data.gamePlayers[0].player, data.gamePlayers[1].player];
-            else
-                this.playerInfo = [data.gamePlayers[1].player, data.gamePlayers[0].player];
+        setPlayersInfo(data) {
+            const swapArray = ([a,b]) => b ? [a,b] : [a];
+            this.players = data.gamePlayers[0].id == this.getParameterByName('gp') ? data.gamePlayers : swapArray(data.gamePlayers);
         },
 
-        setGameTitle() {
-            this.gameTitle = this.playerInfo[0].email + '(you) vs ' + this.playerInfo[1].email;
+        redirectToGames() {
+            location.assign('games.html');
         },
 
-        getGameTitle() {
-            return this.playerInfo[0].email + '(you) vs ' + this.playerInfo[1].email;
+        isGameFull() {
+            return this.players.length == 2;
+        }
+    },
+
+    computed: {
+        gameTitle() {
+            return this.isGameFull() ? this.players[0].player.email + ' VS ' + this.players[1].player.email : 'Waiting Opponent';
         }
     }
 });

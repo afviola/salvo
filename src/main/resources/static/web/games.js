@@ -6,7 +6,7 @@ Vue.component('leaderboard', {
     },
 
     created() {
-        $.get('/api/leaderboard').done(players => players.forEach(player => this.players.push(player)));
+        $.get('/api/leaderboard').done(players => { this.players = players });
     },
 
     template: `
@@ -17,14 +17,15 @@ Vue.component('leaderboard', {
                     <th>Name</th>
                     <th>Total</th>
                     <th>Won</th>
-                    <th>Lost</th>
                     <th>Tied</th>
+                    <th>Lost</th>
                 </thead>
                 <tr v-for="player in players">
                     <td>{{ player.name }}</td>
                     <td>{{ player.total }}</td>
-                    <td>{{ player.lost }}</td>
+                    <td>{{ player.won }}</td>
                     <td>{{ player.tied }}</td>
+                    <td>{{ player.lost }}</td>
                 </tr>
             </table>
         </div>
@@ -36,7 +37,7 @@ Vue.component('games', {
         return {
             username: '',
             password: '',
-            player: null,
+            user: null,
             games: []
         }
     },
@@ -52,14 +53,14 @@ Vue.component('games', {
         },
 
         fetchData() {
-            $.get("/api/games").done(response => {
-                response.games.forEach(game => this.games.push(game));
-                this.player = response.player;
+            $.get('/api/games').done(response => {
+                this.games = response.games;
+                this.user = response.player;
             });
         },
 
         login() {
-            $.post("/api/login", { username: this.username, password: this.password })
+            $.post('/api/login', { username: this.username, password: this.password })
                 .done(() => {
                     this.fetchData();
                     this.clearInputs();
@@ -68,48 +69,68 @@ Vue.component('games', {
         },
 
         logout() {
-            $.post("/api/logout")
-                .done(() => {
-                    this.player = null
-                });
+            $.post('/api/logout')
+                .done(() => { this.user = null });
         },
 
         signIn() {
-            $.post("/api/players", { username: this.username, password: this.password })
-                .done(response => {
-                    this.clearInputs();
-                    alert(`new user created: ${response.username}`);
-            });
+            $.post('/api/players', { username: this.username, password: this.password })
+                .done(() => {
+                    this.login()
+                })
+                .fail(response => { console.log(response) });
         },
 
         createGame() {
-            $.post("/api/games")
+            $.post('/api/games')
                 .done(response => {
                     console.log(response);
-                    location.assign(`game.html?gp=${response.gpid}`);
+                    this.redirectBrowserToGame(response.gpid);
                 });
         },
 
-        joinGame() {
-            console.log('joinGame clicked');
-        }
+        isUserPlayingThisGame(game) {
+            return game.gamePlayers.find(gp => gp.player.email == this.user.email) != null;
+        },
+
+        isGameFull(game) {
+            return game.gamePlayers.length == 2;
+         },
+
+        getOwnerGamePlayerId(game) {
+            return game.gamePlayers[0].gpid;
+        },
+
+        joinGame(event) {
+            $.post(`api/game/${event.target.attributes.gameid.value}/players`)
+                .done(response => { console.log(response) })
+                .fail(response => { console.log(response) });
+        },
+
+        returnToGame(event) {
+            this.redirectBrowserToGame(event.target.id);
+        },
+
+        redirectBrowserToGame(gpid) {
+            location.assign(`game.html?gp=${gpid}`);
+        },
     },
 
     template: `
         <div>
-            <span v-if="!player">
+            <span v-if="!user">
                 <input type="text" placeholder="username" v-model="username">
                 <input type="password" placeholder="password" v-model="password">
                 <button @click="login">login</button>
                 <button @click="signIn">sign in</button>
             </span>
             <span v-else>
-                <span>User: {{ player.email }}</span>
+                <span>User: {{ user.email }}</span>
                 <button @click="logout">logout</button>
             </span>
 
             <h3>Game List</h3>
-            <button v-show="player" @click="createGame">New Game</button>
+            <button v-show="user" @click="createGame">New Game</button>
             <table>
                 <thead>
                     <th>Created</th>
@@ -119,12 +140,16 @@ Vue.component('games', {
                 <tr v-for="game in games">
                     <td>{{ game.created }}</td>
                     <td>{{ game.gamePlayers[0].player.email }}</td>
-                    <td v-show="game.gamePlayers[1]">{{ game.gamePlayers[1].player.email }}</td>
-                    <td v-show="!game.gamePlayers[1]">
-                        <button :id="game.gamePlayers[0].gpid"
+                    <td v-if="isGameFull(game)">{{ game.gamePlayers[1].player.email }}</td>
+                    <td v-else>
+                        <button :id="getOwnerGamePlayerId(game)"
+                                :gameid="game.id"
                                 @click="joinGame">
                                 Join Game
                         </button>
+                    </td>
+                    <td v-if="user && isUserPlayingThisGame(game)">
+                        <button :id="getOwnerGamePlayerId(game)" @click="returnToGame">Enter</button>
                     </td>
                 </tr>
             </table>

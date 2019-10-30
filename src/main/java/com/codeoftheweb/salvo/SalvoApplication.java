@@ -47,21 +47,33 @@ public class SalvoApplication {
 			ScoreRepository scoreRepository) {
 
 		return (args) -> {
-			Player player1 = new Player("j.bauer@ctu.gov", passwordEncoder().encode("123"));
-			Player player2 = new Player("c.obrian@ctu.gov", passwordEncoder().encode("456"));
+			Player player1 = new Player("j.bauer@gob.ar", passwordEncoder().encode("123"));
+			Player player2 = new Player("c.obrian@gob.ar", passwordEncoder().encode("123"));
+			Player player3 = new Player("d.brando@gob.ar", passwordEncoder().encode("123"));
+            Player player4 = new Player("g.giovanna@gob.ar", passwordEncoder().encode("123"));
 
 			playerRepository.save(player1);
 			playerRepository.save(player2);
+			playerRepository.save(player3);
+            playerRepository.save(player4);
 
 			Game game1 = new Game();
+			Game game2 = new Game();
+            Game game3 = new Game();
 
 			gameRepository.save(game1);
+			gameRepository.save(game2);
+            gameRepository.save(game3);
 
 			GamePlayer gp1 = new GamePlayer(player1, game1);
 			GamePlayer gp2 = new GamePlayer(player2, game1);
+			GamePlayer gp3 = new GamePlayer(player3, game2);
+			GamePlayer gp4 = new GamePlayer(player4, game3);
 
 			gamePlayerRepository.save(gp1);
 			gamePlayerRepository.save(gp2);
+			gamePlayerRepository.save(gp3);
+            gamePlayerRepository.save(gp4);
 
 			shipRepository.save(new Ship("Submarine", gp1, Arrays.asList("E1", "F1", "G1")));
 			shipRepository.save(new Ship("Patrol Boat", gp1, Arrays.asList("B4", "B5")));
@@ -108,11 +120,13 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 						"/web/games**",
 						"/api/login",
 						"/api/games",
+						"/api/players",
 						"/api/leaderboard").permitAll()
 				.antMatchers(
 						"/web/game.html",
 						"/web/game.css",
 						"/web/game.js",
+						"/api/game/**", //test
 						"/api/game_view/*",
 						"/api/logout").hasAuthority("USER")
 				.antMatchers("/rest/**").hasAuthority("ADMIN")

@@ -13,6 +13,7 @@
   <div id="app" class="container">
     <span v-show="boardDataReady">
       <div>
+        <button @click="redirectToGames">Go Back</button>
         <span>{{ gameTitle }}</span>
       </div>
 
@@ -26,6 +27,8 @@
              :tablero="'S'">
       </board>
     </span>
+
+    {{ $data }}
   </div>
 
   <!-- jQuery library -->
