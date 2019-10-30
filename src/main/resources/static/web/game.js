@@ -5,15 +5,11 @@ Vue.component('board', {
             <table border="1">
                 <thead>
                     <th></th>
-                    <th v-for="columna in columnas">
-                      {{columna}}
-                    </th>
+                    <th v-for="columna in columnas">{{ columna }}</th>
                 </thead>
                 <tr v-for="fila in filas">
-                    <td> {{fila}} </td>
-                    <td v-for="columna in Number(columnas)"
-                        :id="tablero + '_' + fila + columna">
-                    </td>
+                    <td>{{ fila }}</td>
+                    <td v-for="columna in Number(columnas)" :id="tablero + '_' + fila + columna"></td>
                 </tr>
             </table>
         </div>
@@ -34,16 +30,12 @@ var app = new Vue({
             .done(data => {
                 console.log(data);
                 this.setPlayersInfo(data);
-
                 this.printBoats(data.ships);
                 this.printLaunchedSalvoes(data.salvoes);
                 this.printOpponentHits(data.ships, data.salvoes);
-
                 this.boardDataReady = true;
             })
-            .fail((jqXHR, textStatus) => {
-                alert('Failed: ' + textStatus);
-            });
+            .fail(response => { console.log(response) });
     },
 
     methods: {
@@ -90,7 +82,7 @@ var app = new Vue({
         },
 
         setPlayersInfo(data) {
-            const swapArray = ([a,b]) => b ? [a,b] : [a];
+            const swapArray = ([a,b]) => b ? [b,a] : [a];
             this.players = data.gamePlayers[0].id == this.getParameterByName('gp') ? data.gamePlayers : swapArray(data.gamePlayers);
         },
 

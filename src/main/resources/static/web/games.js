@@ -75,9 +75,7 @@ Vue.component('games', {
 
         signIn() {
             $.post('/api/players', { username: this.username, password: this.password })
-                .done(() => {
-                    this.login()
-                })
+                .done(() => { this.login() })
                 .fail(response => { console.log(response) });
         },
 
@@ -90,7 +88,7 @@ Vue.component('games', {
         },
 
         isUserPlayingThisGame(game) {
-            return game.gamePlayers.find(gp => gp.player.email == this.user.email) != null;
+            return this.user && game.gamePlayers.find(gp => gp.player.email == this.user.email) != null;
         },
 
         isGameFull(game) {
@@ -103,12 +101,16 @@ Vue.component('games', {
 
         joinGame(gameId) {
             $.post(`/api/game/${gameId}/players`)
-                .done(response => { console.log(response) })
-                .fail(response => { console.log(response) });
+                .done(response => { this.redirectBrowserToGame(response.gpid) })
+                .fail(response => {
+                    if (!this.user)
+                        alert('You need to login to join games');
+                    console.log(response)
+                });
         },
 
-        returnToGame(event) {
-            this.redirectBrowserToGame(event.target.id);
+        returnToGame(gpid) {
+            this.redirectBrowserToGame(gpid);
         },
 
         redirectBrowserToGame(gpid) {
@@ -130,7 +132,7 @@ Vue.component('games', {
             </span>
 
             <h3>Game List</h3>
-            <button v-show="user" @click="createGame">New Game</button>
+            <button v-if="user" @click="createGame">New Game</button>
             <table>
                 <thead>
                     <th>Created</th>
@@ -142,14 +144,10 @@ Vue.component('games', {
                     <td>{{ game.gamePlayers[0].player.email }}</td>
                     <td v-if="isGameFull(game)">{{ game.gamePlayers[1].player.email }}</td>
                     <td v-else>
-                        <button :id="getOwnerGamePlayerId(game)"
-                                :gameid="game.id"
-                                @click="joinGame(game.id)">
-                                Join Game
-                        </button>
+                        <button @click="joinGame(game.id)">Join Game</button>
                     </td>
-                    <td v-if="user && isUserPlayingThisGame(game)">
-                        <button :id="getOwnerGamePlayerId(game)" @click="returnToGame">Enter</button>
+                    <td v-if="isUserPlayingThisGame(game)">
+                        <button @click="returnToGame(getOwnerGamePlayerId(game))">Enter</button>
                     </td>
                 </tr>
             </table>

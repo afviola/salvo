@@ -95,7 +95,7 @@ public class SalvoController {
                 .stream()
                 .noneMatch(gamePlayer -> gamePlayer.getId() == gamePlayerId) ) {
 
-            return new ResponseEntity<>(makeMap("error", "what a shame bro"), HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(makeMap("error", "what a shame bro"), HttpStatus.FORBIDDEN); // cheat
         }
 
         GamePlayer currentGamePlayer = gamePlayerRepository.getOne(gamePlayerId);
