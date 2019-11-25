@@ -5,10 +5,9 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Entity
 public class GamePlayer {
@@ -49,6 +48,14 @@ public class GamePlayer {
         dto.put("player", player.toDto());
 
         return dto;
+    }
+
+    public Stream<Map<String, Object>> toDtoShipStream() {
+        return ships.stream().map(ship -> ship.toDto());
+    }
+
+    public Stream<Map<String, Object>> toDtoSalvoStream() {
+        return salvoes.stream().map(salvo -> salvo.toDto());
     }
 
     public long getId() {

@@ -128,8 +128,8 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 						"/web/game.js",
 						"/api/game/*/players", //test
 						"/api/game_view/*",
+						"/api/games/players/*/ships",
 						"/api/logout").hasAuthority("USER")
-				//.antMatchers("/rest/**").hasAuthority("ADMIN")
 				.anyRequest().denyAll();
 
         http.formLogin()

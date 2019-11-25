@@ -24,9 +24,7 @@ public class Player {
     private String userName;
     private String password;
 
-    public Player() {
-
-    }
+    public Player() {}
 
     public Player(String userName, String password) {
         this.userName = userName;
@@ -70,6 +68,14 @@ public class Player {
         return dto;
     }
 
+    public boolean isMe(long gamePlayerId) {
+        return gamePlayers.stream().anyMatch(gp -> gp.getId() == gamePlayerId);
+    }
+
+    public boolean isMe(GamePlayer gamePlayer) {
+        return isMe(gamePlayer.getId());
+    }
+
     public String getPassword() {
         return password;
     }
@@ -90,32 +96,3 @@ public class Player {
         return scores;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

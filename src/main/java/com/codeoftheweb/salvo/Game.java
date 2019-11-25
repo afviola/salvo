@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Entity
 public class Game {
@@ -37,6 +38,18 @@ public class Game {
                 .collect(Collectors.toList()));
 
         return dto;
+    }
+
+    public Stream<Map<String, Object>> toDtoSalvoStream() {
+        return gamePlayers.stream().flatMap(gp -> gp.toDtoSalvoStream());
+    }
+
+    public int numberOfPlayers() {
+        return gamePlayers.size();
+    }
+
+    public boolean isPlayingInMe(Player player) {
+        return gamePlayers.stream().anyMatch(gp -> gp.getPlayer().getId() == player.getId());
     }
 
     public long getId() {
