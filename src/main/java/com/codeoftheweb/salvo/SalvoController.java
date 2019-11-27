@@ -50,9 +50,11 @@ public class SalvoController {
         if( !getCurrentUser(authentication).isMe(gamePlayerId) )
             return new ResponseEntity("wrong game player", HttpStatus.UNAUTHORIZED);
 
-        if( shipRepository.findAll().stream().filter(ship -> ship.getGamePlayer().getId() == gamePlayerId).count() != 0 )
+        GamePlayer currentGamePlayer = gamePlayerRepository.findById(gamePlayerId).get();
+        if( currentGamePlayer.getShips().size() != 0 )
             return new ResponseEntity("ships already placed", HttpStatus.FORBIDDEN);
 
+        ships.stream().forEach(ship -> ship.setGamePlayer(currentGamePlayer));
         shipRepository.saveAll(ships);
 
         return new ResponseEntity("ships were allocated", HttpStatus.CREATED);
