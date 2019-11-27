@@ -28,10 +28,14 @@ public class Ship {
 
     }
 
-    public Ship(String type ,GamePlayer gamePlayer, List<String> locations) {
+    public Ship(String type, List<String> locations) {
         this.type = type;
-        this.gamePlayer = gamePlayer;
         this.locations = locations;
+    }
+
+    public Ship(String type, GamePlayer gamePlayer, List<String> locations) {
+        this(type, locations);
+        this.gamePlayer = gamePlayer;
     }
 
     public Map<String, Object> toDto() {

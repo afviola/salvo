@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -27,6 +26,9 @@ public class SalvoController {
     private PlayerRepository playerRepository;
 
     @Autowired
+    private ShipRepository shipRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @RequestMapping("/leaderboard")
@@ -39,20 +41,21 @@ public class SalvoController {
     }
 
     @RequestMapping(value = "/games/players/{gamePlayerId}/ships", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> allocateShips(@PathVariable long gamePlayerId, @RequestBody Object ships, Authentication authentication) {
+    public ResponseEntity<String> allocateShips(
+            @PathVariable long gamePlayerId, @RequestBody List<Ship> ships, Authentication authentication) {
+
         if( isGuest(authentication) )
-            return new ResponseEntity<>(makeMap("error", "users must be logged in to allocate ships"), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity("users must be logged in to allocate ships", HttpStatus.UNAUTHORIZED);
 
-        Player player = getCurrentUser(authentication);
-        if( player == null )
-            return new ResponseEntity<>(makeMap("error", "player not found"), HttpStatus.UNAUTHORIZED);
+        if( !getCurrentUser(authentication).isMe(gamePlayerId) )
+            return new ResponseEntity("wrong game player", HttpStatus.UNAUTHORIZED);
 
-        if( !player.isMe(gamePlayerId) )
-            return new ResponseEntity<>(makeMap("error", "no such game player"), HttpStatus.UNAUTHORIZED);
+        if( shipRepository.findAll().stream().filter(ship -> ship.getGamePlayer().getId() == gamePlayerId).count() != 0 )
+            return new ResponseEntity("ships already placed", HttpStatus.FORBIDDEN);
 
-        // faltan cosas
+        shipRepository.saveAll(ships);
 
-        return new ResponseEntity<>(makeMap("created", "ships were allocated"), HttpStatus.CREATED);
+        return new ResponseEntity("ships were allocated", HttpStatus.CREATED);
     }
 
     @RequestMapping("/games")
