@@ -72,10 +72,6 @@ public class Player {
         return gamePlayers.stream().anyMatch(gp -> gp.getId() == gamePlayerId);
     }
 
-    public boolean isMe(GamePlayer gamePlayer) {
-        return isMe(gamePlayer.getId());
-    }
-
     public String getPassword() {
         return password;
     }

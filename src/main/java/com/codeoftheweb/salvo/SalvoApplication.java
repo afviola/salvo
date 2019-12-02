@@ -117,14 +117,14 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
 				.antMatchers(
-						"/web/scripts/*", // experimental
-						"/web/styles/*", // experimental
-						"/web/games.html", // experimental
+						"/web/scripts/*",
+						"/web/styles/*",
+						"/web/games.html",
 						"/api/login",
 						"/api/games",
 						"/api/players",
 						"/api/leaderboard",
-						"/rest/**")
+						"/rest/*")
 				.permitAll()
 				.antMatchers(
 						"/web/dist/*",

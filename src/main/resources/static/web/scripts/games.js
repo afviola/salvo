@@ -96,6 +96,7 @@ Vue.component('games', {
          },
 
         getOwnerGamePlayerId(game) {
+            console.log(game);
             return game.gamePlayers[0].gpid;
         },
 
