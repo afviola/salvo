@@ -18,16 +18,12 @@ import java.util.stream.Collectors;
 public class SalvoController {
     @Autowired
     private GameRepository gameRepository;
-
     @Autowired
     private GamePlayerRepository gamePlayerRepository;
-
     @Autowired
     private PlayerRepository playerRepository;
-
     @Autowired
     private ShipRepository shipRepository;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -40,7 +36,7 @@ public class SalvoController {
                 .collect(Collectors.toList());
     }
 
-    @RequestMapping(value = "/games/players/{gamePlayerId}/ships", method = RequestMethod.POST)
+    @RequestMapping(path = "/games/players/{gamePlayerId}/ships", method = RequestMethod.POST)
     public ResponseEntity<String> allocateShips(
             @PathVariable long gamePlayerId, @RequestBody List<Ship> ships, Authentication authentication) {
 
@@ -54,7 +50,10 @@ public class SalvoController {
         if( currentGamePlayer.getShips().size() != 0 )
             return new ResponseEntity("ships already placed", HttpStatus.FORBIDDEN);
 
-        ships.stream().forEach(ship -> ship.setGamePlayer(currentGamePlayer));
+        if( ships.size() != 5 )
+            return new ResponseEntity("wrong number of ships", HttpStatus.FORBIDDEN);
+
+        ships.forEach(ship -> ship.setGamePlayer(currentGamePlayer));
         shipRepository.saveAll(ships);
 
         return new ResponseEntity("ships were allocated", HttpStatus.CREATED);
