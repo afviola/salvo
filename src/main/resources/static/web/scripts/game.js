@@ -55,7 +55,7 @@ var app = new Vue({
         printLaunchedSalvoes(salvoes) {
             console.log(salvoes);
             salvoes
-                .filter(salvo => salvo.player == this.players[0].gpid) // mis salvos
+                .filter(salvo => salvo.gpid == this.players[0].gpid) // mis salvos
                 .forEach(salvo => {
                     salvo.locations.forEach(location => {
                         const salvoCell = document.getElementById(`S_${location}`);
@@ -69,7 +69,7 @@ var app = new Vue({
             const myLocations = ships.flatMap(ship => ship.locations);
 
             salvoes
-                .filter(salvo => salvo.player != this.players[0].id) // los salvos enemigos
+                .filter(salvo => salvo.gpid != this.players[0].gpid) // los salvos enemigos
                 .forEach(salvo => {
                     salvo.locations.forEach(location => {
                         if (myLocations.includes(location)) {
@@ -82,8 +82,7 @@ var app = new Vue({
         },
 
         setPlayersInfo(data) {
-            const swapArray = ([a,b]) => b ? [b,a] : [a];
-            this.players = data.gamePlayers[0].id == this.getParameterByName('gp') ? data.gamePlayers : swapArray(data.gamePlayers);
+            this.players = data.gamePlayers[0].gpid == this.getParameterByName('gp') ? data.gamePlayers : data.gamePlayers.reverse();
         },
 
         redirectToGames() {

@@ -93,11 +93,12 @@ Vue.component('games', {
 
         isGameFull(game) {
             return game.gamePlayers.length == 2;
-         },
+        },
 
         getOwnerGamePlayerId(game) {
             console.log(game);
-            return game.gamePlayers[0].gpid;
+            let ownerIndex = this.user.email == game.gamePlayers[0].player.email ? 0 : 1;
+            return game.gamePlayers[ownerIndex].gpid;
         },
 
         joinGame(gameId) {
