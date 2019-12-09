@@ -1,43 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Game</title>
-  <link rel="stylesheet"
-        href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-  <link rel="stylesheet" type="text/css" href="styles/game.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="dist/normalize.css" />
+  <link rel="stylesheet" href="dist/gridstack.css" />
+  <link rel="stylesheet" href="dist/gridstack-extra.css" />
+  <link rel="stylesheet" href="styles/style.css" />
 </head>
-
 <body>
-  <div id="app" class="container">
-    <span v-show="boardDataReady">
-      <div>
-        <button @click="redirectToGames">Go Back</button>
-        <span>{{ gameTitle }}</span>
-      </div>
 
-      <board :filas="filas"
-             :columnas="columnas"
-             :tablero="'B'">
-      </board>
-
-      <board :filas="filas"
-             :columnas="columnas"
-             :tablero="'S'">
-      </board>
-    </span>
-
-    {{ $data }}
+  <div class="grid-ships">
+    <div id="grid" class="grid-stack grid-stack-10"></div>
   </div>
+  <small id="alert-text"></small>
 
-  <!-- jQuery library -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <!-- Popper JS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-  <!-- Latest compiled JavaScript -->
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-  <script src="./scripts/game.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
+  <script src="dist/jquery-ui.min.js"></script>
+  <script src="dist/gridstack.js"></script>
+  <script src="dist/gridstack.jQueryUI.js"></script>
+  <script src="dist/jquery.ui.touch-punch.min.js"></script>
+  <script src="scripts/main.js"></script>
+  <script src="scripts/game.js"></script>
 </body>
 </html>

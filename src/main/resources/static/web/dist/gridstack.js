@@ -1,10 +1,4 @@
-/**
- * gridstack.js 0.4.0
- * http://troolee.github.io/gridstack.js/
- * (c) 2014-2018 Pavel Reznikov, Dylan Weiss
- * gridstack.js may be freely distributed under the MIT license.
- * @preserve
-*/
+
 (function(factory) {
     if (typeof define === 'function' && define.amd) {
         define(['jquery', 'lodash'], factory);

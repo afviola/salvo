@@ -118,7 +118,8 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
 				.antMatchers(
 						"/web/scripts/*",
-						"/web/styles/*",
+						"/web/styles/**",
+						"/web/dist/*",
 						"/web/games.html",
 						"/api/login",
 						"/api/games",
@@ -127,7 +128,6 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 						"/rest/*")
 				.permitAll()
 				.antMatchers(
-						"/web/dist/*",
 						"/web/game.html",
 						"/api/game/*/players",
 						"/api/game_view/*",
