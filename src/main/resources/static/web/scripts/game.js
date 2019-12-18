@@ -58,6 +58,7 @@ new Vue({
         salvoes: null,
         ships: null,
         boardDataReady: false,
+        toLaunch: []
     },
 
     mounted() {
@@ -132,6 +133,12 @@ new Vue({
                         salvoCell.innerHTML = salvo.turn;
                     });
                 });
+        },
+
+
+
+        printSalvoToLaunch() {
+
         }
     },
 });

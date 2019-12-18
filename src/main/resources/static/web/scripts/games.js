@@ -12,7 +12,7 @@ Vue.component('leaderboard', {
     template: `
         <div>
             <h3>Leaderboard</h3>
-            <table>
+            <table class="table">
                 <thead>
                     <th>Name</th>
                     <th>Total</th>
