@@ -65,7 +65,7 @@ Vue.component('games', {
                     this.fetchData();
                     this.clearInputs();
                 })
-                .fail(() => console.log('ups! login failed'));
+                .fail(() => alert('login failed'));
         },
 
         logout() {
@@ -76,7 +76,10 @@ Vue.component('games', {
         signIn() {
             $.post('/api/players', { username: this.username, password: this.password })
                 .done(() => { this.login() })
-                .fail(response => { console.log(response) });
+                .fail(response => {
+                    console.log(response);
+                    alert('sign in failed');
+                });
         },
 
         createGame() {
@@ -146,7 +149,9 @@ Vue.component('games', {
                     <td>{{ game.gamePlayers[0].player.email }}</td>
                     <td v-if="isGameFull(game)">{{ game.gamePlayers[1].player.email }}</td>
                     <td v-else>
-                        <button @click="joinGame(game.id)">Join Game</button>
+                        <span v-if="user">
+                            <button @click="joinGame(game.id)">Join Game</button>
+                        </span>
                     </td>
                     <td v-if="isUserPlayingThisGame(game)">
                         <button @click="returnToGame(getOwnerGamePlayerId(game))">Enter</button>

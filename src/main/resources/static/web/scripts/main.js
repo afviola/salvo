@@ -1,7 +1,6 @@
 
-$(() => loadGrid())
 //Función principal que dispara el frame gridstack.js y carga la matriz con los barcos
-const loadGrid = function () {
+const loadGrid = function() {
     var options = {
         //matriz 10 x 10
         width: 10,
@@ -20,18 +19,37 @@ const loadGrid = function () {
         //permite al widget ocupar mas de una columna
         //sirve para no inhabilitar el movimiento en pantallas pequeñas
         disableOneColumnMode: true,
-        // en falso permite arrastrar a los widget, true lo deniega
+        //true setea widgets staticos, falso permite arrastrarlos
         staticGrid: false,
         //para animaciones
         animate: true
     }
+
     //inicializacion de la matriz
     $('.grid-stack').gridstack(options);
 
     grid = $('#grid').data('gridstack');
 
-    //Aqui se inicializan los widgets(nuestros barcos) en la matriz 
-    //.addWidget(elemento,pos x, pos y, ancho, alto) **
+    addDefaultShips();
+
+    //createGrid construye la estructura de la matriz
+    createGrid(11, $(".grid-ships"), 'ships')
+
+    //Inicializo los listenener para rotar los barcos, el numero del segundo argumento
+    //representa la cantidad de celdas que ocupa tal barco
+    rotateShips("carrier", 5);
+    rotateShips("battleship", 4);
+    rotateShips("submarine",3);
+    rotateShips("destroyer", 3);
+    rotateShips("patrol_boat", 2);
+
+    listenBusyCells('ships')
+    $('.grid-stack').on('change', () => listenBusyCells('ships'))
+}
+
+//Aqui se inicializan los widgets(nuestros barcos) en la matriz
+//.addWidget(elemento,pos x, pos y, ancho, alto) **
+const addDefaultShips = function() {
     grid.addWidget($('<div id="patrol_boat"><div class="grid-stack-item-content patrol_boatHorizontal"></div><div/>'),
         0, 1, 2, 1);
 
@@ -46,24 +64,7 @@ const loadGrid = function () {
 
     grid.addWidget($('<div id="destroyer"><div class="grid-stack-item-content destroyerHorizontal"></div><div/>'),
         7, 8, 3, 1);
-
-    
-    //createGrid construye la estructura de la matriz
-    createGrid(11, $(".grid-ships"), 'ships')
-
-    //Inicializo los listenener para rotar los barcos, el numero del segundo rgumento
-    //representa la cantidad de celdas que ocupa tal barco
-    rotateShips("carrier", 5)
-    rotateShips("battleship", 4)
-    rotateShips("submarine",3)
-    rotateShips("destroyer", 3)
-    rotateShips("patrol_boat",2)
-
-    listenBusyCells('ships')
-    $('.grid-stack').on('change', () => listenBusyCells('ships'))
-    
 }
-
 
 //createGrid construye la estructura de la matriz
 /*
@@ -88,14 +89,7 @@ const createGrid = function(size, element, id){
         row.classList.add('grid-row')
         //row: <div id="ship-grid-row0" class="grid-wrapper"></div>
         row.id =`${id}-grid-row${i}`
-        /*
-        wrapper:
-                <div class="grid-wrapper">
-                    <div id="ship-grid-row-0" class="grid-row">
 
-                    </div>
-                </div>
-        */
         wrapper.appendChild(row)
 
         for(let j = 0; j < size; j++){
@@ -150,7 +144,6 @@ function(tipoDeBarco, celda)*/
 const rotateShips = function(shipType, cells){
 
         $(`#${shipType}`).click(function(){
-            document.getElementById("alert-text").innerHTML = `Rotaste: ${shipType}`
             console.log($(this))
             //Establecemos nuevos atributos para el widget/barco que giramos
             let x = +($(this).attr('data-gs-x'))
@@ -198,10 +191,6 @@ const rotateShips = function(shipType, cells){
 	                	$(this).children().removeClass(`${shipType}Horizontal`);
 	                	$(this).children().addClass(`${shipType}Vertical`);
 	            }
-                
-                
-            }else{
-            		document.getElementById("alert-text").innerHTML = "A ship is blocking the way!"
             }
             
         //Este bloque se ejecuta si el barco que queremos girar esta en vertical

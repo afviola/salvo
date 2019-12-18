@@ -59,6 +59,26 @@ public class SalvoController {
         return new ResponseEntity("ships were allocated", HttpStatus.CREATED);
     }
 
+    @RequestMapping(path = "/games/players/{gamePlayerId}/salvoes", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> allocateSalvoes(
+            @PathVariable long gamePlayerId, List<String> salvoLocations, Authentication authentication) {
+
+        if( isGuest(authentication) )
+            return new ResponseEntity(makeMap("error", "user is not logged in"), HttpStatus.UNAUTHORIZED);
+
+        if( !getCurrentUser(authentication).isMe(gamePlayerId) )
+            return new ResponseEntity(makeMap("error", "you are not this player"), HttpStatus.UNAUTHORIZED);
+
+        if( salvoLocations.size() != 5 )
+            return new ResponseEntity(makeMap("error", "wrong number of salvoes"), HttpStatus.FORBIDDEN);
+
+        GamePlayer currentGamePlayer = gamePlayerRepository.findById(gamePlayerId).get();
+        currentGamePlayer.launchSalvo(new Salvo(currentGamePlayer, currentGamePlayer.turnNumber(), salvoLocations));
+        gamePlayerRepository.save(currentGamePlayer);
+
+        return new ResponseEntity(makeMap("success", "salvoes were allocated"), HttpStatus.CREATED);
+    }
+
     @RequestMapping("/games")
     public Map<String, Object> getAllGames(Authentication authentication) {
         Map dto = makeMap("player", isGuest(authentication) ? null : getCurrentUser(authentication).toDto());
@@ -76,43 +96,43 @@ public class SalvoController {
     public ResponseEntity<Map<String, Object>> createNewGame(Authentication authentication) {
 
         if( isGuest(authentication) )
-            return new ResponseEntity<>(makeMap("error", "users must be logged in to create games"), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity(makeMap("error", "users must be logged in to create games"), HttpStatus.UNAUTHORIZED);
 
         GamePlayer newGamePlayer = gamePlayerRepository.save(new GamePlayer(getCurrentUser(authentication), gameRepository.save(new Game())));
 
-        return new ResponseEntity<>(makeMap("gpid", newGamePlayer.getId()), HttpStatus.CREATED);
+        return new ResponseEntity(makeMap("gpid", newGamePlayer.getId()), HttpStatus.CREATED);
     }
 
     @RequestMapping(path = "/game/{gameId}/players", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> joinGame(@PathVariable long gameId, Authentication authentication) {
 
         if( isGuest(authentication) )
-            return new ResponseEntity<>(makeMap("error", "users must be logged in to join games"), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity(makeMap("error", "users must be logged in to join games"), HttpStatus.UNAUTHORIZED);
 
         Game game = gameRepository.getOne(gameId);
         if( game == null )
-            return new ResponseEntity<>(makeMap("error", "no such game"), HttpStatus.FORBIDDEN);
+            return new ResponseEntity(makeMap("error", "no such game"), HttpStatus.FORBIDDEN);
 
         if( game.numberOfPlayers() == 2 )
-            return new ResponseEntity<>(makeMap("error", "game is full"), HttpStatus.FORBIDDEN);
+            return new ResponseEntity(makeMap("error", "game is full"), HttpStatus.FORBIDDEN);
 
         Player player = getCurrentUser(authentication);
         if( game.isPlayingInMe(player) )
-            return new ResponseEntity<>(makeMap("error", "you can't join to your own game"), HttpStatus.FORBIDDEN);
+            return new ResponseEntity(makeMap("error", "you can't join to your own game"), HttpStatus.FORBIDDEN);
 
         GamePlayer newGamePlayer = gamePlayerRepository.save(new GamePlayer(player, game));
 
-        return new ResponseEntity<>(makeMap("gpid", newGamePlayer.getId()), HttpStatus.CREATED);
+        return new ResponseEntity(makeMap("gpid", newGamePlayer.getId()), HttpStatus.CREATED);
     }
 
     @RequestMapping("/game_view/{gamePlayerId}")
     public ResponseEntity<Map<String, Object>> getGamePlayerViewById(@PathVariable long gamePlayerId, Authentication authenticacion) {
 
         if( isGuest(authenticacion) )
-            return new ResponseEntity<>(makeMap("error", "user is a guest"), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity(makeMap("error", "user is a guest"), HttpStatus.UNAUTHORIZED);
 
         if( !getCurrentUser(authenticacion).isMe(gamePlayerId) )
-            return new ResponseEntity<>(makeMap("error", "you are not this user"), HttpStatus.FORBIDDEN);
+            return new ResponseEntity(makeMap("error", "you are not this user"), HttpStatus.FORBIDDEN);
 
         GamePlayer currentGamePlayer = gamePlayerRepository.getOne(gamePlayerId);
         Game currentGame = currentGamePlayer.getGame();
@@ -121,23 +141,23 @@ public class SalvoController {
         gameView.put("ships", currentGamePlayer.toDtoShipStream().collect(Collectors.toList()));
         gameView.put("salvoes", currentGame.toDtoSalvoStream().collect(Collectors.toList()));
 
-        return new ResponseEntity<>(gameView, HttpStatus.CREATED);
+        return new ResponseEntity(gameView, HttpStatus.CREATED);
     }
 
     @RequestMapping(path = "/players", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createNewPlayer(@RequestParam String username, @RequestParam String password) {
 
         if( username.isEmpty() || password.isEmpty() )
-            return new ResponseEntity<>(makeMap("error", "invalid login data"), HttpStatus.FORBIDDEN);
+            return new ResponseEntity(makeMap("error", "invalid login data"), HttpStatus.FORBIDDEN);
 
         if( playerRepository.findByUserName(username) != null )
-            return new ResponseEntity<>(makeMap("error", "username already exists"), HttpStatus.CONFLICT);
+            return new ResponseEntity(makeMap("error", "username already exists"), HttpStatus.CONFLICT);
 
         Player newPlayer = playerRepository.save(new Player(username, passwordEncoder.encode(password)));
         Map map = makeMap("id", newPlayer.getId());
         map.put("username", newPlayer.getUserName());
 
-        return new ResponseEntity<>(map, HttpStatus.CREATED);
+        return new ResponseEntity(map, HttpStatus.CREATED);
     }
 
     private Player getCurrentUser(Authentication authentication) {

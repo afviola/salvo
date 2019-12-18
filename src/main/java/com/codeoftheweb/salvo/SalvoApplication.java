@@ -75,11 +75,6 @@ public class SalvoApplication {
 			gamePlayerRepository.save(gp3);
             gamePlayerRepository.save(gp4);
 
-			shipRepository.save(new Ship("Submarine", gp1, Arrays.asList("E1", "F1", "G1")));
-			shipRepository.save(new Ship("Patrol Boat", gp1, Arrays.asList("B4", "B5")));
-			shipRepository.save(new Ship("Destroyer", gp2, Arrays.asList("B5", "C5", "D5")));
-			shipRepository.save(new Ship("Patrol Boat", gp2, Arrays.asList("C6", "C7")));
-
 			salvoRepository.save(new Salvo(gp1, 1, Arrays.asList("A1", "H8", "G5")));
 			salvoRepository.save(new Salvo(gp2, 2, Arrays.asList("B2", "F1", "D5")));
 
@@ -129,10 +124,13 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.permitAll()
 				.antMatchers(
 						"/web/game.html",
+						"/web/input.html",
 						"/api/game/*/players",
 						"/api/game_view/*",
 						"/api/games/players/*/ships",
-						"/api/logout").hasAuthority("USER")
+						"/api/games/players/*/salvoes",
+						"/api/logout")
+				.hasAuthority("USER")
 				.anyRequest().denyAll();
 
         http.formLogin()

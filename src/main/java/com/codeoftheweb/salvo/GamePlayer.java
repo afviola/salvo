@@ -1,6 +1,7 @@
 package com.codeoftheweb.salvo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -24,10 +25,10 @@ public class GamePlayer {
     @JoinColumn(name = "fk_game")
     private Game game;
 
-    @OneToMany(mappedBy = "gamePlayer", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "gamePlayer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Ship> ships;
 
-    @OneToMany(mappedBy = "gamePlayer", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "gamePlayer", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Salvo> salvoes;
 
     private Date creationDate;
@@ -48,6 +49,14 @@ public class GamePlayer {
         dto.put("player", player.toDto());
 
         return dto;
+    }
+
+    public int turnNumber() {
+        return salvoes.size() + 1;
+    }
+
+    public void launchSalvo(Salvo salvo) {
+        salvoes.add(salvo);
     }
 
     public Stream<Map<String, Object>> toDtoShipStream() {
